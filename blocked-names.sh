@@ -4,7 +4,7 @@ command -v jq >/dev/null || { echo "jq not installed" >&2; exit 2; }
 
 MALE=(alexander benjamin christopher daniel david davis charles edward ethan james marcus matthew michael robert stephen thomas)
 FEMALE=(aurora clara dorothy dorothea eden eleanor elena emma emily faye grace hope iris jennifer june lily lisa luna margaret maya mia natalie olive patricia patty rose sage sara sarah sophia sophie tara victoria violet zara)
-LAST=(anderson ashford bennett chen cooper jackson mercer miller mitchell patterson rivera sterling torres turner ward wells white winters)
+LAST=(anderson ashford bennett chen cooper jackson mercer miller mitchell patterson rivera sterling torres turner ward wells winters)
 N=$(printf '%s\n' "${MALE[@]}" "${FEMALE[@]}" "${LAST[@]}" 2>/dev/null | paste -sd '|' - || echo "")
 E=$(printf '%s' "$*" | tr ' ' '|')
 
