@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const agentsDir = path.join(__dirname, '..', 'agents');
+const agentsDir = path.join(process.cwd(), '.claude', 'agent-memory');
 
 if (fs.existsSync(agentsDir)) {
     const folders = fs.readdirSync(agentsDir);
