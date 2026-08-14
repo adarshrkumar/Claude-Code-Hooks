@@ -2,9 +2,11 @@ const fs = require('fs');
 const cp = require('child_process');
 const path = require('path');
 
-const files = fs.readdirSync(__dirname);
 const validExtensions = ['.sh', '.js', '.py', '.ts', '.c', '.cpp'];
 const noRunFiles = ['on-stop.sh', 'index.js'];
+
+const files = fs.readdirSync(__dirname);
+
 const hooks = files.filter(file => validExtensions.includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
 
 let code = 0;
