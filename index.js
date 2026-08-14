@@ -5,9 +5,7 @@ const path = require('path');
 const validExtensions = ['.sh', '.js', '.py', '.ts', '.c', '.cpp'];
 const noRunFiles = ['on-stop.sh', 'index.js'];
 
-const files = fs.readdirSync(__dirname);
-
-const hooks = files.filter(file => validExtensions.includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
+const hooks = fs.readdirSync(__dirname).filter(file => validExtensions.includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
 
 let code = 0;
 
