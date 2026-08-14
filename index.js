@@ -63,6 +63,8 @@ for (const hook of hooks) {
         stdio: ['pipe', 'inherit', 'pipe']
     });
 
+    if (result.error) result.status = 2;
+
     result.stderr && console.error(hook, result.stderr);
 
     code = Math.max(code, result.status);
