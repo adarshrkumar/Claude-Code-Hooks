@@ -29,7 +29,12 @@ const hooks = fs.readdirSync(__dirname).filter(file => Object.keys(validExtensio
 
 let code = 0;
 
-const input = fs.readFileSync(0, 'utf-8');
+let input;
+try {
+    input = fs.readFileSync(0, 'utf-8');
+} catch {
+    input = undefined;
+}
 
 for (const hook of hooks) {
     const ext = path.extname(hook);
