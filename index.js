@@ -7,9 +7,7 @@ const validExtensions = ['.sh', '.js', '.py', '.ts', '.c', '.cpp'];
 const noRunFiles = ['on-stop.sh', 'index.js'];
 const hooks = files.filter(file => validExtensions.includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
 
-let hasCode2 = false;
-let hasCode1 = false;
-let hasCode0 = false;
+let code = 0;
 
 const input = fs.readFileSync(0, 'utf-8');
 
@@ -38,14 +36,14 @@ for (const hook of hooks) {
     const result = cp.spawnSync(cmd, args, {
         input: input,
         encoding: 'utf-8',
-        stdio: ['pipe', 'inherit', 'inherit']
+        stdio: ['pipe', 'inherit', 'ignore']
     });
 
-         if (result.status === 2) hasCode2 = true;
-    else if (result.status === 1) hasCode1 = true;
-    else if (result.status === 0) hasCode0 = true;
+    result.stderr && console.error(hook, result.stderr);
+
+    code = result.status;
 }
 
-     if (hasCode2) process.exit(2);
-else if (hasCode1) process.exit(1);
-else if (hasCode0) process.exit(0);
+     if (code === 2) process.exit(2);
+else if (code === 1) process.exit(1);
+else if (code === 0) process.exit(0);
