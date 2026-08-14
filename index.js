@@ -2,10 +2,30 @@ const fs = require('fs');
 const cp = require('child_process');
 const path = require('path');
 
-const validExtensions = ['.sh', '.js', '.py', '.ts', '.c', '.cpp'];
+const validExtensions = {
+    '.sh': {
+        cmd: 'bash'
+    },
+    '.js': {
+        cmd: 'node'
+    },
+    '.ts': {
+        cmd: 'node',
+        args: ['--experimental-strip-types']
+    },
+    '.py': {
+        cmd: 'python3'
+    },
+    '.c': {
+        compileCmd: 'gcc'
+    },
+    '.cpp': {
+        compileCmd: 'g++'
+    }
+};
 const noRunFiles = ['on-stop.sh', 'index.js'];
 
-const hooks = fs.readdirSync(__dirname).filter(file => validExtensions.includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
+const hooks = fs.readdirSync(__dirname).filter(file => Object.keys(validExtensions).includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
 
 let code = 0;
 
@@ -13,21 +33,20 @@ const input = fs.readFileSync(0, 'utf-8');
 
 for (const hook of hooks) {
     const ext = path.extname(hook);
-    const outfile = `/tmp/${hook}.out`;
-    let compileCmd, cmd, args = [];
+    const outfile = `./${hook}.out`;
 
-         if (ext === '.c'  ) compileCmd = 'gcc';
-    else if (ext === '.cpp') compileCmd = 'g++';
+    let compileCmd = validExtensions[ext]?.compileCmd;
+    let cmd = validExtensions[ext]?.cmd;
+    let args = validExtensions[ext]?.args || [];
 
-         if (ext === '.sh') cmd = 'bash';
-    else if (ext === '.js') cmd = 'node';
-    else if (ext === '.py') cmd = 'python3';
-    else if (ext === '.ts') {
-        cmd = 'node';
-        args.push('--experimental-strip-types');
-    }
-    else if (ext === '.c' || ext === '.cpp') {
+    if (ext === '.c' || ext === '.cpp') {
         cp.spawnSync(compileCmd, [`${__dirname}/${hook}`, '-o', outfile], { stdio: 'inherit' });
+
+        if (!fs.existsSync(outfile)) {
+            code = Math.max(code, 1);
+            continue;
+        }
+        
         cmd = outfile;
     }
 
@@ -36,12 +55,14 @@ for (const hook of hooks) {
     const result = cp.spawnSync(cmd, args, {
         input: input,
         encoding: 'utf-8',
-        stdio: ['pipe', 'inherit', 'ignore']
+        stdio: ['pipe', 'inherit', 'pipe']
     });
 
     result.stderr && console.error(hook, result.stderr);
 
-    code = result.status;
+    code = Math.max(code, result.status);
+
+    if (ext === '.c' || ext === '.cpp') fs.rmSync(outfile, { force: true });
 }
 
      if (code === 2) process.exit(2);
