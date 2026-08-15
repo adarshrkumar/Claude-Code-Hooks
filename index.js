@@ -2,6 +2,8 @@ const fs = require('fs');
 const cp = require('child_process');
 const path = require('path');
 
+const noRunFiles = ['on-stop.sh', 'stop-word-check.sh', 'index.js'];
+
 const validExtensions = {
     '.sh': {
         cmd: 'bash'
@@ -23,7 +25,6 @@ const validExtensions = {
         compileCmd: 'g++'
     }
 };
-const noRunFiles = ['on-stop.sh', 'index.js'];
 
 const hooks = fs.readdirSync(__dirname).filter(file => Object.keys(validExtensions).includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
 
