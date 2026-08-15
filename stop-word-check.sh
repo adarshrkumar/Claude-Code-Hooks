@@ -1,9 +1,14 @@
 #!/bin/bash
 input=$(cat)
-transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
-if [ -n "$transcript_path" ]; then
-    latest=$(jq -r '.messages[-1].content[0].text // ""' "$transcript_path" 2>/dev/null)
-    if [[ "$latest" =~ [Ss][Tt][Oo][Pp] ]]; then
-        bash "$(dirname "$0")/on-stop.sh"
-    fi
+delta=$(echo "$input" | jq -r '.delta // ""')
+if [[ "$delta" =~ [Ss][Tt][Oo][Pp] ]]; then
+    bash "$(dirname "$0")/on-stop.sh"
+    appended="$delta
+\"stop\" has been detected in the AI's response."
+    echo "$input" | jq -n --arg content "$appended" '{
+  "hookSpecificOutput": {
+    "hookEventName": "MessageDisplay",
+    "displayContent": $content
+  }
+}'
 fi
