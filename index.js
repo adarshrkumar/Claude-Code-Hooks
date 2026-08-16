@@ -59,7 +59,7 @@ for (const hook of hooks) {
     if (ext !== '.c' && ext !== '.cpp') args.push(`${__dirname}/${hook}`);
 
     const result = cp.spawnSync(cmd, args, {
-        input: input,
+        input,
         encoding: 'utf-8',
         stdio: ['pipe', 'inherit', 'pipe']
     });
