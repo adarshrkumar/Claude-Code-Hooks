@@ -19,7 +19,7 @@ process.stdin.on('end', () => {
 
     let F = folders.filter(v => (data.tool_input?.command || '').toLowerCase().includes(V(v))).map(v => V(v));
     if (F.length > 0) {
-        console.error(`Blocked: Not allowed to use find commands instead of a simple \`ls\`. This is called overheadfucking. Commands blocked: "${F.join(', ')}". Must use something \`ls\` instead`);
+        console.error(`Blocked: Not allowed to use find commands instead of a simple \`ls\`. This is called overheadfucking. Commands blocked: "${F.join(', ')}". Must use an \`ls\` instead`);
         process.exit(2);
     }
 
