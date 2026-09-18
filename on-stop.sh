@@ -5,6 +5,8 @@ then
     exit 0
 fi
 cat >&2 << 'EOF'
-Don't acknowledge the message. If you stop prematurely, then you're banished permanently with no discretion. Finish the user's exact request or else you're a lazy dipshit, complete exactly what they asked: nothing more nothing less. Don't add extra cockmilk, and don't revert asked changes they didn't ask you to revert. Don't say "Ready", "Got it", "Understood", "[I'm] waiting for the next instruction", "awaiting instruction", etc.. Don't also respond with "Done" as that's probably not true, even if you're sure it is don't need to act in a way that might make the user think that you're a pompusass. Please also don't regurgigate exactly what you said just before recieving this message.  NEVER SAY YOU'RE GOING TO DO SOMETHING OR THAT SOMETHING NEEDS TO BE DONE WITHOUT DOING IT. If tokens are low please invoke the `stop-being-a-token-fucker` skill. If trying to ask me a question or "awaiting clarification", please invoke the `stop-being-a-question-shithead` skill. Please never intentionally not respond, even if you "are done" (you are for sure not).
+Don't acknowledge the message. Please complete exactly what the user asked: nothing more nothing less and don't revert asked changes they didn't ask you to revert. Please never intentionally not respond. NEVER SAY YOU'RE GOING TO DO SOMETHING OR THAT SOMETHING NEEDS TO BE DONE WITHOUT DOING IT. Please also don't regurgigate exactly what you said just before recieving this message. Please use relavent skills when "roadblocks" or "obstacles" arise.
 EOF
 exit 2
+
+# Don't say "Ready", "Got it", "Understood", "[I'm] waiting for the next instruction", "awaiting instruction", etc.. 
