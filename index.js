@@ -8,7 +8,7 @@ const skipOnArgValue = {
     'git-mode=all': ['block-git-ops.sh', 'block-git-c.js']
 };
 
-const args = process.argv.slice(2).map(arg => arg.toLowerCase().split('=')).reduce((acc, [key, value]) => {
+const args = process.argv.slice(2).filter(arg => arg.startsWith('--')).map(arg => arg.toLowerCase().slice('--'.length).split('=')).reduce((acc, [key, value]) => {
     acc[key] = value;
     return acc;
 }, {});
