@@ -5,7 +5,7 @@ const path = require('path');
 const noRunFiles = ['on-stop.sh', 'stop-word-check.sh', 'index.js'];
 
 const skipOnArgValue = {
-    'git-mode=all': ['block-git-ops.sh']
+    'git-mode=all': ['block-git-ops.sh', 'block-git-c.js']
 };
 
 const args = process.argv.slice(2).map(arg => arg.toLowerCase().split('=')).reduce((acc, [key, value]) => {
