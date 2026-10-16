@@ -4,6 +4,15 @@ const path = require('path');
 
 const noRunFiles = ['on-stop.sh', 'stop-word-check.sh', 'index.js'];
 
+const skipOnArgValue = {
+    'git-mode=all': ['block-git-ops.sh']
+};
+
+const args = process.argv.slice(2).map(arg => arg.toLowerCase().split('=')).reduce((acc, [key, value]) => {
+    acc[key] = value;
+    return acc;
+}, {});
+
 const validExtensions = {
     '.sh': {
         cmd: 'bash'
@@ -58,17 +67,18 @@ for (const hook of hooks) {
 
     if (ext !== '.c' && ext !== '.cpp') args.push(`${__dirname}/${hook}`);
 
-    const result = cp.spawnSync(cmd, args, {
-        input,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'inherit', 'pipe']
-    });
+    if (!Object.keys(skipOnArgValue).filter(k => Object.keys(args).map(k => `${k}=${args[k]}`).includes(k)).map(k => skipOnArgValue[k]).flat().includes(hook)) {
+        const result = cp.spawnSync(cmd, args, {
+            input,
+            encoding: 'utf-8',
+            stdio: ['pipe', 'inherit', 'pipe']
+        });
 
-    if (result.error) result.status = 2;
-
-    result.stderr && console.error(hook, result.stderr);
-
-    code = Math.max(code, result.status);
+        if (result.error) result.status = 2;
+        result.stderr && console.error(hook, result.stderr);
+        code = Math.max(code, result.status);
+    }
+    else code = Math.max(code, 0)
 
     if (ext === '.c' || ext === '.cpp') fs.rmSync(outfile, { force: true });
 }
