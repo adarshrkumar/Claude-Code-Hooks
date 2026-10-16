@@ -52,7 +52,7 @@ for (const hook of hooks) {
 
     let compileCmd = validExtensions[ext]?.compileCmd;
     let cmd = validExtensions[ext]?.cmd;
-    let args = validExtensions[ext]?.args || [];
+    let hookArgs = [...(validExtensions[ext]?.args || [])];
 
     if (ext === '.c' || ext === '.cpp') {
         cp.spawnSync(compileCmd, [`${__dirname}/${hook}`, '-o', outfile], { stdio: 'inherit' });
@@ -65,10 +65,10 @@ for (const hook of hooks) {
         cmd = outfile;
     }
 
-    if (ext !== '.c' && ext !== '.cpp') args.push(`${__dirname}/${hook}`);
+    if (ext !== '.c' && ext !== '.cpp') hookArgs.push(`${__dirname}/${hook}`);
 
     if (!Object.keys(skipOnArgValue).filter(k => Object.keys(args).map(k => `${k}=${args[k]}`).includes(k)).map(k => skipOnArgValue[k]).flat().includes(hook)) {
-        const result = cp.spawnSync(cmd, args, {
+        const result = cp.spawnSync(cmd, hookArgs, {
             input,
             encoding: 'utf-8',
             stdio: ['pipe', 'inherit', 'pipe']
