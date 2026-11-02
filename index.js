@@ -5,7 +5,7 @@ const path = require('path');
 const noRunFiles = ['on-stop.sh', 'stop-word-check.sh', 'index.js'];
 
 const skipOnArgValue = {
-    'git-mode=all': ['block-git-ops.sh', 'block-git-c.js']
+    'git-mode=all': ['block-git-ops.js', 'block-git-c.js']
 };
 
 const args = process.argv.slice(2).filter(arg => arg.startsWith('--')).map(arg => arg.toLowerCase().slice('--'.length).split('=')).reduce((acc, [key, value]) => {
@@ -13,29 +13,49 @@ const args = process.argv.slice(2).filter(arg => arg.startsWith('--')).map(arg =
     return acc;
 }, {});
 
-const validExtensions = {
-    '.sh': {
+const validExtensions = [
+    {
+        exts: ['.sh', '.bash'],
         cmd: 'bash'
     },
-    '.js': {
+    {
+        exts: ['.js', '.mjs', '.cjs'],
         cmd: 'node'
     },
-    '.ts': {
+    {
+        exts: ['.ts', '.mts'],
         cmd: 'node',
         args: ['--experimental-strip-types']
     },
-    '.py': {
+    {
+        exts: ['.py'],
         cmd: 'python3'
     },
-    '.c': {
+    {
+        exts: ['.cmd', '.bat'],
+        cmd: 'cmd',
+        args: ['/c']
+    },
+    {
+        exts: ['.ps1'],
+        cmd: 'powershell',
+        args: ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File']
+    },
+    {
+        exts: ['.zsh'],
+        cmd: 'zsh'
+    },
+    {
+        exts: ['.c'],
         compileCmd: 'gcc'
     },
-    '.cpp': {
+    {
+        exts: ['.cpp'],
         compileCmd: 'g++'
     }
-};
+];
 
-const hooks = fs.readdirSync(__dirname).filter(file => Object.keys(validExtensions).includes(path.extname(file)) && !noRunFiles.includes(path.basename(file)));
+const hooks = fs.readdirSync(__dirname).filter(file => validExtensions.some(e => e.exts.includes(path.extname(file))) && !noRunFiles.includes(path.basename(file)));
 
 let code = 0;
 
@@ -50,9 +70,11 @@ for (const hook of hooks) {
     const ext = path.extname(hook);
     const outfile = `./${hook}.out`;
 
-    let compileCmd = validExtensions[ext]?.compileCmd;
-    let cmd = validExtensions[ext]?.cmd;
-    let hookArgs = [...(validExtensions[ext]?.args || [])];
+    const validExtension = validExtensions.find(e => e.exts.includes(ext));
+
+    let compileCmd = validExtension?.compileCmd;
+    let cmd = validExtension?.cmd;
+    let hookArgs = [...(validExtension?.args || [])];
 
     if (ext === '.c' || ext === '.cpp') {
         cp.spawnSync(compileCmd, [`${__dirname}/${hook}`, '-o', outfile], { stdio: 'inherit' });
