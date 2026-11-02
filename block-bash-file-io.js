@@ -1,7 +1,7 @@
 let input = '';
 process.stdin.on('data', chunk => input += chunk);
 process.stdin.on('end', () => {
-    if (/(?:^|[\s;&|(])(?:node(?:\s+--?[\w-]+(?:=\S+)?)*\s+(?:-e|-p|--eval|--print|-|<<)(?=\s|$|['"])|python[\d.]*(?:\s+--?[\w-]+(?:=\S+)?)*\s+(?:(?:-c|-)(?=\s|$|['"])|<<))/.test(JSON.parse(input).tool_input?.command || '')) {
+    if (/(?<![\w.-])(?:perl\s+-\w*[eE]|ruby\s+-\w*e|php\s+-r|osascript\s+-e|bun\s+(?:-e|--eval)|deno\s+eval)(?![\w.-])|(?:^|[\s;&|(])(?:node(?:\s+--?[\w-]+(?:=\S+)?)*\s+(?:-e|-p|--eval|--print|-|<<)(?=\s|$|['"])|python[\d.]*(?:\s+--?[\w-]+(?:=\S+)?)*\s+(?:(?:-c|-)(?=\s|$|['"])|<<))/.test(JSON.parse(input).tool_input?.command || '')) {
         console.error('Blocked: Not allowed to edit files with inline scripts. Must use relative Edit() instead.');
         process.exit(2);
     }
@@ -11,7 +11,7 @@ process.stdin.on('end', () => {
         process.exit(2);
     }
 
-    if (/(?<![\w.-])(?:cat|sed|awk|tee|less|more)(?![\w.-])/.test(JSON.parse(input).tool_input?.command || '')) {
+    if (/(?<![\w.-])(?:cat|sed|awk|tee|less|more|tac|nl|od|xxd|hexdump|strings|bat|cut|paste|rev|fold|column|sort|uniq|tr|jq|wc)(?![\w.-])/.test(JSON.parse(input).tool_input?.command || '')) {
         console.error('Blocked: Not allowed to read or edit files with Bash. Use the Read, Edit, and Write tools instead.');
         process.exit(2);
     }
