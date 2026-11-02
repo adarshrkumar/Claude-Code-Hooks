@@ -5,7 +5,7 @@ let command = '';
 try {
     command = JSON.parse(input).tool_input?.command || '';
 } catch {}
-if (/^sh\s|[^\w]sh\s|^bash\s|[^\w]bash\s|^zsh\s|[^\w]zsh\s/.test(command) && !/^bash\s+(?![\/~]).*\.sh/.test(command)) {
+if (/(?<![\w.-])(?:sh|bash|zsh)(?:\s|$)/.test(command) && !/^bash\s+(?![\/~]).*\.sh/.test(command)) {
     console.error('Blocked: Direct shell invocation is not allowed. Must run the command directly.');
     process.exit(2);
 }
