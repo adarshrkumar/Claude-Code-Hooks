@@ -6,13 +6,18 @@ process.stdin.on('end', () => {
         process.exit(2);
     }
 
-    if (/(?:^|[;&|(`]|\$\()\s*(?:cat|head|tail|sed|awk|tee|less|more)(?:\s|$)|(?:^|\s)cat(?:\s|$)/.test((JSON.parse(input).tool_input?.command || '').replace(/\d*>&[\d-]/g, '').replace(/(?<!\|)\|\s*(?:head|tail)(?:\s+(?:-\d+|-[nc]\s*\d+|--lines=\d+|--bytes=\d+))*(?=\s*(?:$|[;&|)`]))/g, ''))) {
+    if (/(?<![\w.-])(?:head|tail)(?![\w.-])/.test(JSON.parse(input).tool_input?.command || '')) {
+        console.error('Blocked: head and tail are specifically not allowed in Bash. Use the Read tool with offset and limit instead.');
+        process.exit(2);
+    }
+
+    if (/(?<![\w.-])(?:cat|sed|awk|tee|less|more)(?![\w.-])/.test(JSON.parse(input).tool_input?.command || '')) {
         console.error('Blocked: Not allowed to read or edit files with Bash. Use the Read, Edit, and Write tools instead.');
         process.exit(2);
     }
 
     if (/(?:^|\s)\d*>>?\s*[^&=\s]/.test((JSON.parse(input).tool_input?.command || '').replace(/\d*>&[\d-]/g, ''))) {
-        console.error('Blocked: Not allowed to write files with shell redirection. Use the Write or Edit tool instead.');
+        console.error('Blocked: Not allowed to use shell redirection. Use the Write or Edit tool instead.');
         process.exit(2);
     }
 
