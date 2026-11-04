@@ -3,7 +3,7 @@ process.stdin.on('data', chunk => input += chunk);
 process.stdin.on('end', () => {
     const binary = /\S+\.(?:(doc|xls|ppt)|(doc|xls|ppt)(x|m|t)|pdf|(dot|pot)x|xltx|od(t|s|p)|epub|png|jpe?g|gif|bmp|webp|ico|tiff?|heic|mp3|wav|flac|aac|ogg|m4a|mp4|mov|avi|mkv|webm|zip|tar|gz|tgz|bz2|xz|7z|rar|dmg|ttf|otf|woff2?|sqlite3?|db|parquet|pkl|npy|npz|wasm|exe|bin)(?![\w.-])/gi;
 
-    if (/(?:^|[\s(])\d*<(?![<(&])\s*[^\s=]|(?:^|\s)\d*>>?\s*[^&=\s>]/.test((JSON.parse(input).tool_input?.command || '').replace(/\d*>&[\d-]/g, '').replace(binary, ''))) {
+    if (/(?:^|[\s(])\d*<(?![<(&]|[^\s<>@]+@[^\s<>]+>)\s*[^\s=]|(?:^|\s)\d*>>?\s*[^&=\s>]/.test((JSON.parse(input).tool_input?.command || '').replace(/\d*>&[\d-]/g, '').replace(binary, ''))) {
         console.error('Blocked: Not allowed to use shell redirection. Use the Read, Write, or Edit tool instead.');
         process.exit(2);
     }
