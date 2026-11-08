@@ -6,8 +6,8 @@ process.stdin.on('end', () => {
         process.exit(2);
     }
 
-    if (/(?<![\w.-])ls(?![\w.-])[^;&]*\|\s*(?:grep|egrep|fgrep|rg)(?![\w.-])|(?<![\w.-])rg(?![\w.-])[^;&|]*--files/.test(JSON.parse(input).tool_input?.command || '')) {
-        console.error('Blocked: Not allowed to use grep to filter file names. Use `ls` with a glob or flags and read the full output instead.');
+    if (/(?<![\w.-])(?:grep|egrep|fgrep|zgrep|ugrep|rg|ag|ack)(?![\w.-])/i.test(JSON.parse(input).tool_input?.command || '')) {
+        console.error('Blocked: Not allowed to search files with grep or rg. Use `ls` to list the files and Read them in full instead.');
         process.exit(2);
     }
 
