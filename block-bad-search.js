@@ -7,7 +7,7 @@ process.stdin.on('end', () => {
     }
 
     if (/(?<![\w.-])(?:[efzu]?grep|rg|ag|ack)(?![\w.-])/i.test((JSON.parse(input).tool_input?.command || '').replace(/(?<![\w.-])(?:[efzu]?grep|rg|ag|ack)(?![\w.-])[^;&|]*\s(?:-[A-Za-z]*[lLcq][A-Za-z]*|--(?:files-with-matches|files-without-match|count|count-matches|quiet|silent))(?![\w-])[^;&|]*/gi, ''))) {
-        console.error('Blocked: Not allowed to use grep or rg to show file contents. Use `ls` to list the files and Read them in full instead.');
+        console.error('Blocked: grep/rg (searching or printing matching lines) is not allowed. Use `ls` to list the files and Read them in full instead.');
         process.exit(2);
     }
 

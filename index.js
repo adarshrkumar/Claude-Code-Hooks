@@ -90,7 +90,7 @@ for (const hook of hooks) {
 
     if (ext !== '.c' && ext !== '.cpp') hookArgs.push(`${__dirname}/${hook}`);
 
-    if (!Object.keys(skipOnArgValue).filter(k => Object.keys(args).map(k => `${k}=${args[k]}`).includes(k)).map(k => skipOnArgValue[k]).flat().includes(hook)) {
+    if (!Object.keys(skipOnArgValue).filter(k => 'global' in args || Object.keys(args).map(k => `${k}=${args[k]}`).includes(k)).map(k => skipOnArgValue[k]).flat().includes(hook)) {
         const result = cp.spawnSync(cmd, hookArgs, {
             input,
             encoding: 'utf-8',
